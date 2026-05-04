@@ -1,5 +1,7 @@
 {
   "id": "payment",
+  "name": "Payment",
+  "description": "Agent-driven payments via Stripe Link virtual cards (browser-fill with sentinel substitution) and HTTP 402 / Machine Payments Protocol (MPP).",
   "activation": {
     "onStartup": true
   },
