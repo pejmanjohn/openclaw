@@ -2,6 +2,12 @@
 
 Agent-driven purchases for OpenClaw. Issue single-use virtual cards via Stripe Link, fill checkout forms in a browser without the agent ever seeing real card data, and pay HTTP 402 endpoints over the Machine Payments Protocol — all behind explicit, severity-graded approvals.
 
+## Plugin type
+
+This is a **code plugin** for OpenClaw — it ships a bundled runtime (`dist/index.js`) that registers a `payment` tool, a `before_tool_call` hook for sentinel substitution, and a `before_message_write` hook for outbound PAN/CVV/MPP-token redaction. It is **not** an instruction-only skill. The plugin's runtime is what enforces the security model; the bundled `SKILL.md` is a behavior guide for the agent that consumes the tool, not a substitute for the runtime.
+
+The plugin's only third-party runtime dependency at execution time is the [Stripe Link CLI](https://github.com/stripe/link-cli) — Stripe's official, open-source CLI for issuing Link-backed virtual cards. The plugin invokes it via `execFile("link-cli", [...args])` with array-only arguments, no shell, and a hardened runner that escalates SIGTERM → SIGKILL on timeout. There is no path from agent input to arbitrary command execution.
+
 ## Overview
 
 The `payment` plugin gives an OpenClaw agent two safe paths to spend money on a user's behalf:
@@ -34,16 +40,17 @@ Then enable in your OpenClaw config:
 
 ## Prerequisites
 
-The `stripe-link` provider requires the [Stripe Link CLI](https://github.com/stripe/link-cli) on your `PATH`:
+To use the `stripe-link` provider, you need Stripe's official Link CLI installed. This is a deliberate architectural choice — Link CLI is published, signed, and maintained by Stripe at [github.com/stripe/link-cli](https://github.com/stripe/link-cli). The payment plugin does not bundle, fork, or wrap card-issuance logic itself; it delegates to Stripe's CLI.
 
 ```bash
 npm install -g @stripe/link-cli
 ```
 
-- Minimum required version: `0.4.0`
-- `link-cli` must be resolvable as that exact name on `PATH` — the plugin invokes it via `execFile("link-cli", […])`
+- **Source of truth:** [github.com/stripe/link-cli](https://github.com/stripe/link-cli) (published as `@stripe/link-cli` on npm, owned by Stripe Inc.)
+- **Minimum version:** `0.4.0`
+- `link-cli` must be resolvable on `PATH` — the plugin invokes it as a subprocess via `execFile("link-cli", […])`
 - A Link account with at least one saved payment method
-- The Stripe Link mobile app on your phone (for biometric approval)
+- The Stripe Link mobile app for biometric approval
 
 The `mock` provider has no external dependencies and is suitable for tests, CI, and demos.
 
