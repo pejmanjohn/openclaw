@@ -6,6 +6,20 @@ OpenClaw plugin for agent-driven purchases via virtual card (Stripe Link) and ma
 
 **Developer notes:** `DEV_NOTES.md`
 
+## Prerequisites
+
+The `stripe-link` provider requires the Stripe Link CLI on your `PATH`:
+
+```bash
+npm install -g @stripe/link-cli
+```
+
+- Minimum required version: `0.4.0`
+- A Link account with at least one saved payment method
+- The Link mobile app on your phone (for biometric approval)
+
+The `mock` provider has no external dependencies and is suitable for testing and CI.
+
 ## Build / test
 
 ```bash

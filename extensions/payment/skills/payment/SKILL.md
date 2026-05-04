@@ -6,6 +6,22 @@ user-invocable: false
 
 # Payment
 
+## Prerequisites
+
+To use the `stripe-link` provider, the Stripe Link CLI must be installed and on your `PATH`:
+
+```bash
+npm install -g @stripe/link-cli
+```
+
+- Minimum required version: `0.4.0`
+- A Link account with at least one saved payment method
+- The Link mobile app on your phone (for biometric approval)
+
+The plugin config defaults `providers["stripe-link"].command` to `"link-cli"`. If you install the binary under a different name or path, set that config key accordingly.
+
+---
+
 Use this skill when you need to make a purchase using the OpenClaw payment plugin. Two paths exist:
 
 - **Virtual card checkout** — issue a single-use card, fill a browser form using sentinels, submit the checkout.
@@ -230,6 +246,15 @@ The fill-hook resolves each sentinel `field` by name against a two-tier data mod
 - **Tier 1 — card secrets** (always present): `pan`, `cvv`, `exp_month`, `exp_year`, `exp_mm_yy`, `exp_mm_yyyy`. These are strictly card-secret and never persisted; the redaction-hook scans for them by pattern.
 - **Tier 2 — buyer profile** (provider-dependent): `holder_name`, `billing_line1`, `billing_city`, `billing_state`, `billing_postal_code`, `billing_country`. Populated when the provider response includes `card.billing_address`. Skipped silently when missing — the fill-hook reports a clear "field not available" error rather than silently filling an empty string.
 - **Tier 3 — forward-compat extras**: any string-typed top-level field on the provider response that isn't structurally captured by Tier 1/2. Adapters auto-pass-through these so agents can use new field names the moment the provider exposes them.
+
+### Safety boundary
+
+The forward-compat passthrough is deliberately narrow. Plugin operators and reviewers should understand its exact scope:
+
+- **String-typed top-level fields only.** The adapter only passes through fields whose value is a primitive `string` at the top level of the provider response (`card.*` and `card.billing_address.*`). Object-typed fields such as `card.tokenization: { token: "..." }` are never passed through, even if they contain a nested string.
+- **Agent must explicitly name each field.** Passthrough does not run automatically. The agent must include `field: "<name>"` in the sentinel object. Unknown field names fail fast with a `block: true` error that lists exactly which fields are available. There is no wildcard, glob, or bulk-passthrough mode.
+- **The `before_message_write` redaction hook scans by pattern, not by key name.** The hook checks every outgoing assistant message for PAN-shape (13-19 digit Luhn-valid) strings and CVV-context strings regardless of which key they are under. If a future provider response were to put unexpected card data under an unexpected extras field, the redaction hook would catch it at the persistence boundary.
+- **Recommendation for plugin operators.** Before approving a fill request, review the field-name list shown in the approval prompt — it is always explicit. The well-known safe fields are: `pan`, `cvv`, `exp_month`, `exp_year`, `exp_mm_yy`, `exp_mm_yyyy`, `holder_name`, `billing_line1`, `billing_city`, `billing_state`, `billing_postal_code`, `billing_country`. Any field outside this list is a forward-compat extra and should be scrutinized before approval.
 
 **Forward-compat passthrough — example.** If link-cli starts exposing `card.email`, you can use `field: "email"` in a fill call right away with no plugin update:
 

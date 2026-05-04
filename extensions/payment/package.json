@@ -1,6 +1,6 @@
 {
-  "name": "@pejmanjohn/openclaw-payment",
-  "version": "1.0.0",
+  "name": "@pejmanjohn/payment",
+  "version": "1.0.1",
   "description": "Agent-driven payments for OpenClaw via Stripe Link virtual cards (browser-fill with sentinel substitution) and HTTP 402 / Machine Payments Protocol (MPP)",
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
       "./index.ts"
     ],
     "install": {
-      "npmSpec": "@pejmanjohn/openclaw-payment",
+      "npmSpec": "@pejmanjohn/payment",
       "defaultChoice": "npm",
       "minHostVersion": ">=2026.5.3"
     },
