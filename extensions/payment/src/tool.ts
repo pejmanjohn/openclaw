@@ -194,7 +194,7 @@ async function handlePaymentTool(
 
 export function registerPaymentTool(api: OpenClawPluginApi, manager: PaymentManager): void {
   api.registerTool({
-    name: "payment",
+    name: "pay",
     label: "Payment",
     description: [
       "Manage payments via the OpenClaw payment plugin.",

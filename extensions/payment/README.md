@@ -4,13 +4,13 @@ Agent-driven purchases for OpenClaw. Issue single-use virtual cards via Stripe L
 
 ## Plugin type
 
-This is a **code plugin** for OpenClaw — it ships a bundled runtime (`dist/index.js`) that registers a `payment` tool, a `before_tool_call` hook for sentinel substitution, and a `before_message_write` hook for outbound PAN/CVV/MPP-token redaction. It is **not** an instruction-only skill. The plugin's runtime is what enforces the security model; the bundled `SKILL.md` is a behavior guide for the agent that consumes the tool, not a substitute for the runtime.
+This is a **code plugin** for OpenClaw — it ships a bundled runtime (`dist/index.js`) that registers a `pay` tool, a `before_tool_call` hook for sentinel substitution, and a `before_message_write` hook for outbound PAN/CVV/MPP-token redaction. It is **not** an instruction-only skill. The plugin's runtime is what enforces the security model; the bundled `SKILL.md` is a behavior guide for the agent that consumes the tool, not a substitute for the runtime.
 
 The plugin's only third-party runtime dependency at execution time is the [Stripe Link CLI](https://github.com/stripe/link-cli) — Stripe's official, open-source CLI for issuing Link-backed virtual cards. The plugin invokes it via `execFile("link-cli", [...args])` with array-only arguments, no shell, and a hardened runner that escalates SIGTERM → SIGKILL on timeout. There is no path from agent input to arbitrary command execution.
 
 ## Overview
 
-The `payment` plugin gives an OpenClaw agent two safe paths to spend money on a user's behalf:
+The `pay` plugin gives an OpenClaw agent two safe paths to spend money on a user's behalf:
 
 - **Virtual card checkout** — the plugin asks Stripe Link to mint a single-use card, the user approves on their phone, and the agent fills the merchant's checkout form using opaque `sentinel` placeholders. A runtime hook substitutes the real card values into the browser at fill time. The agent never sees the PAN, CVV, or full billing details — they're not in its transcript, parameters, or state.
 - **Machine Payment** — the plugin executes a payment directly against an HTTP 402 endpoint that advertises the [Machine Payments Protocol](https://machinepayments.dev/). No browser. No card form. Useful for paid APIs, crawl quotas, or any per-call billing surface.
@@ -20,7 +20,7 @@ Every spend is gated by an OpenClaw approval (`warning` for issuing a card, `cri
 ## Install
 
 ```bash
-clawhub package install @pejmanjohn/openclaw-payment
+clawhub package install @pejmanjohn/payment
 ```
 
 Then enable in your OpenClaw config:
@@ -29,7 +29,7 @@ Then enable in your OpenClaw config:
 {
   "plugins": {
     "entries": {
-      "payment": {
+      "pay": {
         "enabled": true,
         "provider": "stripe-link"
       }
@@ -56,7 +56,7 @@ The `mock` provider has no external dependencies and is suitable for tests, CI, 
 
 ## Tools
 
-The plugin contributes a single tool, `payment`, with five actions:
+The plugin contributes a single tool, `pay`, with five actions:
 
 | Action                    | Severity | What it does                                                                                                                                                                                        |
 | ------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

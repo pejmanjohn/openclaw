@@ -137,7 +137,7 @@ describe("fill hook — scope: non-browser tool", () => {
   it("returns undefined for a non-browser tool", async () => {
     const manager = makeMockManager();
     const result = await handleBrowserBeforeToolCall(
-      { toolName: "payment", params: { action: "issue_virtual_card" } },
+      { toolName: "pay", params: { action: "issue_virtual_card" } },
       makeOpts(manager),
     );
     expect(result).toBeUndefined();

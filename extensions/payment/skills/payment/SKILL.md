@@ -1,5 +1,5 @@
 ---
-name: payment
+name: pay
 description: Use when making a purchase with the payment plugin — virtual card checkout via browser or machine payment to an HTTP 402 endpoint. Covers the full agentic purchase workflow including sentinel fill, approval handling, 3DS retry, and card expiry recovery.
 user-invocable: false
 ---
@@ -48,7 +48,7 @@ Pick an appropriate funding source whose `rails` array includes `virtual_card` (
 
 ### Issue the card
 
-Call `payment.issue_virtual_card` with a `purchaseIntent` of at least 100 characters. The intent text is shown to the user during the Stripe Link approval prompt on their phone — be specific about what is being purchased and why.
+Call `pay.issue_virtual_card` with a `purchaseIntent` of at least 100 characters. The intent text is shown to the user during the Stripe Link approval prompt on their phone — be specific about what is being purchased and why.
 
 ```json
 {
@@ -303,7 +303,7 @@ If the checkout fails (3DS challenge, network error, form validation error, brow
 1. Do NOT issue a new virtual card immediately.
 2. Re-snapshot the checkout page to understand the current state.
 3. If a 3DS challenge appeared, wait for the user to complete it (or dismiss it), then retry the fill on the same handle. Each retry fill requires a new critical-severity approval.
-4. If the page shows a card decline or a permanent error, use `payment.get_payment_status` to check the handle status before deciding.
+4. If the page shows a card decline or a permanent error, use `pay.get_payment_status` to check the handle status before deciding.
 5. If `get_payment_status` returns `{ status: "approved" }` and `validUntil` is in the future, the card is still usable — retry the fill.
 6. If `get_payment_status` returns `{ status: "expired" }` or the fill hook returns a `card_unavailable` error, the card has been consumed or has expired. Issue a new virtual card (back to Step 3A) and inform the user that a new approval is needed.
 

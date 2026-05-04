@@ -294,8 +294,8 @@ describe("payment tool handler dispatch", () => {
     tool = extractTool(manager);
   });
 
-  it("registers tool with name 'payment'", () => {
-    expect(tool.name).toBe("payment");
+  it("registers tool with name 'pay'", () => {
+    expect(tool.name).toBe("pay");
   });
 
   it("dispatches setup_status to manager.getSetupStatus", async () => {
@@ -521,7 +521,7 @@ describe("registerPaymentTool integration", () => {
     expect(registerTool).toHaveBeenCalledTimes(1);
   });
 
-  it("registered tool has name 'payment'", () => {
+  it("registered tool has name 'pay'", () => {
     const manager = makeFakeManager();
     let capturedTool: any = null;
     const api = {
@@ -530,6 +530,6 @@ describe("registerPaymentTool integration", () => {
       },
     } as unknown as OpenClawPluginApi;
     registerPaymentTool(api, manager);
-    expect(capturedTool?.name).toBe("payment");
+    expect(capturedTool?.name).toBe("pay");
   });
 });

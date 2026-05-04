@@ -28,13 +28,13 @@ Related:
     Test mode uses Stripe's sandbox — no real charges are made.
   </Step>
   <Step title="Configure the plugin">
-    Add the `payment` entry under `plugins.entries` in your `openclaw.json`:
+    Add the `pay` entry under `plugins.entries` in your `openclaw.json`:
 
     ```json
     {
       "plugins": {
         "entries": {
-          "payment": {
+          "pay": {
             "enabled": true,
             "config": {
               "enabled": true,
@@ -60,7 +60,7 @@ Related:
 
 ## Configuration
 
-All config lives under `plugins.entries.payment.config`.
+All config lives under `plugins.entries.pay.config`.
 
 | Field                                     | Type                        | Default                  | Description                                                               |
 | ----------------------------------------- | --------------------------- | ------------------------ | ------------------------------------------------------------------------- |
@@ -81,7 +81,7 @@ All config lives under `plugins.entries.payment.config`.
 {
   plugins: {
     entries: {
-      payment: {
+      pay: {
         enabled: true,
         config: {
           enabled: true,
@@ -115,7 +115,7 @@ The `mock` provider completes all operations locally without network calls. Use 
 
 ## Tool actions
 
-The agent accesses payment functionality through a single `payment` tool with five actions.
+The agent accesses payment functionality through a single `pay` tool with five actions.
 
 ### `setup_status`
 
@@ -274,7 +274,7 @@ This section documents the full flow for `virtual_card` browser checkout end-to-
 
 ### Step 1 — Issue a virtual card
 
-The agent calls `payment.issue_virtual_card`. After your approval in OpenClaw and your biometric approval on the Link mobile app, the result includes:
+The agent calls `pay.issue_virtual_card`. After your approval in OpenClaw and your biometric approval on the Link mobile app, the result includes:
 
 ```json
 {

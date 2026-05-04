@@ -88,7 +88,7 @@ type BeforeToolCallResult = {
 
 function handleBeforeToolCall(event: BeforeToolCallEvent): BeforeToolCallResult | void {
   // Only gate the payment tool
-  if (event.toolName !== "payment") {
+  if (event.toolName !== "pay") {
     return;
   }
 

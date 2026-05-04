@@ -6,7 +6,7 @@
  *   - issue_virtual_card returns requireApproval with severity "warning", title "Issue virtual card".
  *   - execute_machine_payment returns requireApproval with severity "critical".
  *   - Both money-moving actions have timeoutBehavior "deny".
- *   - Hook is scoped to toolName === "payment" only.
+ *   - Hook is scoped to toolName === "pay" only.
  *   - describeIssueApproval / describeExecuteApproval helper output matches spec.
  */
 
@@ -57,7 +57,7 @@ function makeHandler() {
 }
 
 const FAKE_CTX: PluginHookToolContext = {
-  toolName: "payment",
+  toolName: "pay",
 };
 
 function makeEvent(
@@ -75,18 +75,18 @@ describe("before_tool_call hook — read-only actions return void", () => {
   const handler = makeHandler();
 
   it("returns void for setup_status", () => {
-    const result = handler(makeEvent("payment", { action: "setup_status" }), FAKE_CTX);
+    const result = handler(makeEvent("pay", { action: "setup_status" }), FAKE_CTX);
     expect(result).toBeUndefined();
   });
 
   it("returns void for list_funding_sources", () => {
-    const result = handler(makeEvent("payment", { action: "list_funding_sources" }), FAKE_CTX);
+    const result = handler(makeEvent("pay", { action: "list_funding_sources" }), FAKE_CTX);
     expect(result).toBeUndefined();
   });
 
   it("returns void for get_payment_status", () => {
     const result = handler(
-      makeEvent("payment", { action: "get_payment_status", handleId: "h1" }),
+      makeEvent("pay", { action: "get_payment_status", handleId: "h1" }),
       FAKE_CTX,
     );
     expect(result).toBeUndefined();
@@ -134,39 +134,39 @@ describe("before_tool_call hook — issue_virtual_card", () => {
   };
 
   it("returns requireApproval for issue_virtual_card", () => {
-    const result = handler(makeEvent("payment", issueParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", issueParams), FAKE_CTX) as any;
     expect(result).toBeDefined();
     expect(result.requireApproval).toBeDefined();
   });
 
   it("severity is 'warning' for issue_virtual_card", () => {
-    const result = handler(makeEvent("payment", issueParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", issueParams), FAKE_CTX) as any;
     expect(result.requireApproval.severity).toBe("warning");
   });
 
   it("title contains 'Issue virtual card'", () => {
-    const result = handler(makeEvent("payment", issueParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", issueParams), FAKE_CTX) as any;
     expect(result.requireApproval.title).toContain("Issue virtual card");
   });
 
   it("description mentions provider", () => {
-    const result = handler(makeEvent("payment", issueParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", issueParams), FAKE_CTX) as any;
     expect(result.requireApproval.description).toContain("stripe-link");
   });
 
   it("description mentions amount and currency", () => {
-    const result = handler(makeEvent("payment", issueParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", issueParams), FAKE_CTX) as any;
     expect(result.requireApproval.description).toContain("5.00");
     expect(result.requireApproval.description).toContain("USD");
   });
 
   it("description mentions merchant name", () => {
-    const result = handler(makeEvent("payment", issueParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", issueParams), FAKE_CTX) as any;
     expect(result.requireApproval.description).toContain("Acme Corp");
   });
 
   it("timeoutBehavior is 'deny'", () => {
-    const result = handler(makeEvent("payment", issueParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", issueParams), FAKE_CTX) as any;
     expect(result.requireApproval.timeoutBehavior).toBe("deny");
   });
 });
@@ -187,35 +187,35 @@ describe("before_tool_call hook — execute_machine_payment", () => {
   };
 
   it("returns requireApproval for execute_machine_payment", () => {
-    const result = handler(makeEvent("payment", executeParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", executeParams), FAKE_CTX) as any;
     expect(result).toBeDefined();
     expect(result.requireApproval).toBeDefined();
   });
 
   it("severity is 'critical' for execute_machine_payment", () => {
-    const result = handler(makeEvent("payment", executeParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", executeParams), FAKE_CTX) as any;
     expect(result.requireApproval.severity).toBe("critical");
   });
 
   it("title contains 'Execute machine payment'", () => {
-    const result = handler(makeEvent("payment", executeParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", executeParams), FAKE_CTX) as any;
     expect(result.requireApproval.title).toContain("Execute machine payment");
   });
 
   it("description contains 'irreversible'", () => {
-    const result = handler(makeEvent("payment", executeParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", executeParams), FAKE_CTX) as any;
     expect(result.requireApproval.description).toContain("irreversible");
   });
 
   it("description contains provider, targetUrl, method", () => {
-    const result = handler(makeEvent("payment", executeParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", executeParams), FAKE_CTX) as any;
     expect(result.requireApproval.description).toContain("stripe-link");
     expect(result.requireApproval.description).toContain("https://example.com/api/pay");
     expect(result.requireApproval.description).toContain("POST");
   });
 
   it("timeoutBehavior is 'deny'", () => {
-    const result = handler(makeEvent("payment", executeParams), FAKE_CTX) as any;
+    const result = handler(makeEvent("pay", executeParams), FAKE_CTX) as any;
     expect(result.requireApproval.timeoutBehavior).toBe("deny");
   });
 });
@@ -283,7 +283,7 @@ describe("before_tool_call hook — issue_virtual_card blocks on malformed param
 
   it("returns block: true when amount is missing", () => {
     const result = handler(
-      makeEvent("payment", {
+      makeEvent("pay", {
         action: "issue_virtual_card",
         providerId: "mock",
         fundingSourceId: "card-001",
@@ -300,7 +300,7 @@ describe("before_tool_call hook — issue_virtual_card blocks on malformed param
 
   it("returns block: true when merchant is missing", () => {
     const result = handler(
-      makeEvent("payment", {
+      makeEvent("pay", {
         action: "issue_virtual_card",
         providerId: "mock",
         fundingSourceId: "card-001",
@@ -316,7 +316,7 @@ describe("before_tool_call hook — issue_virtual_card blocks on malformed param
 
   it("returns block: true when providerId is missing", () => {
     const result = handler(
-      makeEvent("payment", {
+      makeEvent("pay", {
         action: "issue_virtual_card",
         // providerId intentionally omitted
         fundingSourceId: "card-001",
@@ -330,7 +330,7 @@ describe("before_tool_call hook — issue_virtual_card blocks on malformed param
 
   it("returns requireApproval when all required fields are present", () => {
     const result = handler(
-      makeEvent("payment", {
+      makeEvent("pay", {
         action: "issue_virtual_card",
         providerId: "mock",
         fundingSourceId: "card-001",
@@ -354,7 +354,7 @@ describe("before_tool_call hook — execute_machine_payment blocks on malformed 
 
   it("returns block: true when targetUrl is missing", () => {
     const result = handler(
-      makeEvent("payment", {
+      makeEvent("pay", {
         action: "execute_machine_payment",
         providerId: "mock",
         fundingSourceId: "card-001",
@@ -370,7 +370,7 @@ describe("before_tool_call hook — execute_machine_payment blocks on malformed 
 
   it("returns block: true when method is missing", () => {
     const result = handler(
-      makeEvent("payment", {
+      makeEvent("pay", {
         action: "execute_machine_payment",
         providerId: "mock",
         fundingSourceId: "card-001",
@@ -384,7 +384,7 @@ describe("before_tool_call hook — execute_machine_payment blocks on malformed 
 
   it("returns requireApproval when all required fields are present", () => {
     const result = handler(
-      makeEvent("payment", {
+      makeEvent("pay", {
         action: "execute_machine_payment",
         providerId: "mock",
         fundingSourceId: "card-001",

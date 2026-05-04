@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 import plugin from "./index.js";
 
 describe("payment plugin entry", () => {
-  it("exposes id 'payment'", () => {
-    expect(plugin.id).toBe("payment");
+  it("exposes id 'pay'", () => {
+    expect(plugin.id).toBe("pay");
   });
 
   it("exposes a name", () => {

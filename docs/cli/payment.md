@@ -195,7 +195,7 @@ openclaw payment virtual-card issue \
 - `--purchase-intent` must be at least 100 characters. Shorter values cause a validation error before any provider call.
 - The amount is validated to be a positive integer. Non-integer or negative values exit with an error.
 - For `stripe-link`, `maxAmountCents` is hard-capped at 50000. Requests above this fail at the config schema level.
-- The CLI does not return `fillSentinels` — those are only meaningful in agent context where the `before_tool_call` hook can act on them. Use the agent tool (`payment.issue_virtual_card`) for browser checkout flows.
+- The CLI does not return `fillSentinels` — those are only meaningful in agent context where the `before_tool_call` hook can act on them. Use the agent tool (`pay.issue_virtual_card`) for browser checkout flows.
 
 ---
 
@@ -289,10 +289,10 @@ openclaw payment status --handle-id <id> [--json]
 
 **Options:**
 
-| Flag               | Required | Description                                                                 |
-| ------------------ | -------- | --------------------------------------------------------------------------- |
-| `--handle-id <id>` | yes      | Handle id returned by `virtual-card issue` or `payment.issue_virtual_card`. |
-| `--json`           | no       | Emit JSON: `{ handle: CredentialHandle }`                                   |
+| Flag               | Required | Description                                                             |
+| ------------------ | -------- | ----------------------------------------------------------------------- |
+| `--handle-id <id>` | yes      | Handle id returned by `virtual-card issue` or `pay.issue_virtual_card`. |
+| `--json`           | no       | Emit JSON: `{ handle: CredentialHandle }`                               |
 
 **Behavior:**
 

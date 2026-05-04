@@ -8,7 +8,7 @@ import { createManager } from "./src/manager-factory.js";
 import { registerPaymentTool } from "./src/tool.js";
 
 export default definePluginEntry({
-  id: "payment",
+  id: "pay",
   name: "Payment Plugin",
   description: "Bundled payment plugin: Stripe Link CLI + mock providers",
   register(api) {
