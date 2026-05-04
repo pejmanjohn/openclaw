@@ -1,8 +1,11 @@
 {
-  "name": "@openclaw/payment-plugin",
-  "version": "2026.4.25",
-  "private": true,
-  "description": "OpenClaw payment plugin (Stripe Link + mock providers)",
+  "name": "@pejmanjohn/openclaw-payment",
+  "version": "1.0.0",
+  "description": "Agent-driven payments for OpenClaw via Stripe Link virtual cards (browser-fill with sentinel substitution) and HTTP 402 / Machine Payments Protocol (MPP)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pejmanjohn/openclaw"
+  },
   "type": "module",
   "scripts": {
     "plugin:check": "pnpm dlx @openclaw/plugin-inspector@0.3.5 inspect --no-openclaw",
@@ -10,7 +13,7 @@
   },
   "dependencies": {
     "typebox": "1.1.34",
-    "zod": "^4.3.6"
+    "zod": "^4.4.1"
   },
   "devDependencies": {
     "@openclaw/plugin-sdk": "workspace:*"
@@ -18,6 +21,21 @@
   "openclaw": {
     "extensions": [
       "./index.ts"
-    ]
+    ],
+    "install": {
+      "npmSpec": "@pejmanjohn/openclaw-payment",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.5.3"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.3"
+    },
+    "build": {
+      "openclawVersion": "2026.5.3"
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
   }
 }
