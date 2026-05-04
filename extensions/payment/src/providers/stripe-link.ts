@@ -70,22 +70,20 @@ import type {
 } from "./base.js";
 import { CardUnavailableError, PolicyDeniedError, ProviderUnavailableError } from "./base.js";
 import type { CommandRunner } from "./runner.js";
-import { createNodeCommandRunner } from "./runner.js";
+import { createLinkCliCommandRunner } from "./runner.js";
 
 // ---------------------------------------------------------------------------
 // Public types
 // ---------------------------------------------------------------------------
 
 export type StripeLinkAdapterOptions = {
-  /** Path to the link-cli binary. Defaults to "link-cli" (resolved on PATH). */
-  command?: string;
   /** Display name embedded in spend-request creation. From config.providers["stripe-link"].clientName. */
   clientName: string;
   /** If true, append `--test` to commands that support it (spend-request create/retrieve). */
   testMode: boolean;
   /** Hard cap on amounts. Defaults to 50000 cents (Stripe Link's hard cap). */
   maxAmountCents: number;
-  /** CommandRunner injected for testing. Defaults to createNodeCommandRunner(). */
+  /** CommandRunner injected for testing. Defaults to createLinkCliCommandRunner(). */
   runner?: CommandRunner;
   /**
    * Poll interval for spend-request retrieve. Passed as --interval <n> (seconds).
@@ -152,8 +150,7 @@ function mapStatus(status: string): CredentialHandle["status"] {
 // ---------------------------------------------------------------------------
 
 export function createStripeLinkAdapter(opts: StripeLinkAdapterOptions): PaymentProviderAdapter {
-  const command = opts.command ?? "link-cli";
-  const runner: CommandRunner = opts.runner ?? createNodeCommandRunner();
+  const runner: CommandRunner = opts.runner ?? createLinkCliCommandRunner();
   const commandTimeoutMs = opts.commandTimeoutMs ?? 60_000;
   // Polling timeout: 150 attempts × 2s = 300s, plus headroom
   const pollTimeoutMs = opts.commandTimeoutMs ?? 400_000;
@@ -170,7 +167,7 @@ export function createStripeLinkAdapter(opts: StripeLinkAdapterOptions): Payment
     options?: { input?: string; timeoutMs?: number },
   ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
     try {
-      return await runner(command, args, {
+      return await runner("link-cli", args, {
         timeoutMs: options?.timeoutMs ?? commandTimeoutMs,
         input: options?.input,
       });

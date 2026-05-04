@@ -15,10 +15,9 @@ npm install -g @stripe/link-cli
 ```
 
 - Minimum required version: `0.4.0`
+- `link-cli` must be on your `PATH` — the plugin calls it by that exact name.
 - A Link account with at least one saved payment method
 - The Link mobile app on your phone (for biometric approval)
-
-The plugin config defaults `providers["stripe-link"].command` to `"link-cli"`. If you install the binary under a different name or path, set that config key accordingly.
 
 ---
 

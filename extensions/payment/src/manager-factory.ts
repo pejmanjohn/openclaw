@@ -15,7 +15,6 @@ import { expandStorePath, initHandleStore } from "./store.js";
 export function createManager(config: PaymentConfig): PaymentManager {
   const stripeLinkCfg = config.providers["stripe-link"];
   const stripeLinkAdapter = createStripeLinkAdapter({
-    command: stripeLinkCfg.command,
     clientName: stripeLinkCfg.clientName,
     testMode: stripeLinkCfg.testMode,
     maxAmountCents: stripeLinkCfg.maxAmountCents,

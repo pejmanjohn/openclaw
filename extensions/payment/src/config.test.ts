@@ -22,7 +22,6 @@ describe("parsePaymentConfig — defaults and round-trip", () => {
       enabled: true,
       providers: {
         "stripe-link": {
-          command: "link-cli",
           clientName: "OpenClaw",
           testMode: true,
           maxAmountCents: 10000,
@@ -115,7 +114,6 @@ describe("parsePaymentConfig — maxAmountCents enforcement", () => {
 describe("parsePaymentConfig — nested provider defaults (M9)", () => {
   it("nested provider defaults fire when providers key is omitted entirely", () => {
     const parsed = parsePaymentConfig({ provider: "stripe-link" });
-    expect(parsed.providers["stripe-link"].command).toBe("link-cli");
     expect(parsed.providers["stripe-link"].clientName).toBe("OpenClaw");
     expect(parsed.providers["stripe-link"].testMode).toBe(false);
     expect(parsed.providers["stripe-link"].maxAmountCents).toBe(50000);

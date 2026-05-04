@@ -36,7 +36,6 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "command": { "type": "string", "default": "link-cli" },
               "clientName": { "type": "string", "default": "OpenClaw" },
               "testMode": { "type": "boolean", "default": false },
               "maxAmountCents": {

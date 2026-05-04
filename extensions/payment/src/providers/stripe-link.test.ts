@@ -123,7 +123,6 @@ const BASE_MERCHANT = { name: "Test Merchant", url: "https://merchant.example.co
 
 function makeAdapter(overrides: Partial<StripeLinkAdapterOptions> & { runner: CommandRunner }) {
   return createStripeLinkAdapter({
-    command: "link-cli",
     clientName: "TestClient",
     testMode: false,
     maxAmountCents: 50000,
@@ -133,7 +132,6 @@ function makeAdapter(overrides: Partial<StripeLinkAdapterOptions> & { runner: Co
 
 function makeTestAdapter(overrides: Partial<StripeLinkAdapterOptions> & { runner: CommandRunner }) {
   return createStripeLinkAdapter({
-    command: "link-cli",
     clientName: "TestClient",
     testMode: true,
     maxAmountCents: 50000,
@@ -590,7 +588,6 @@ describe("issueVirtualCard", () => {
       fixtureOk(spendRequestRetrievePollApproved),
     ]);
     const adapter = createStripeLinkAdapter({
-      command: "link-cli",
       clientName: "TestClient",
       testMode: false,
       maxAmountCents: 1000,
@@ -614,7 +611,6 @@ describe("issueVirtualCard", () => {
       fixtureOk(spendRequestRetrievePollApproved),
     ]);
     const adapter = createStripeLinkAdapter({
-      command: "link-cli",
       clientName: "TestClient",
       testMode: false,
       maxAmountCents: 1000,

@@ -6,7 +6,6 @@ import { z } from "zod";
 
 const stripeLinkProviderSchema = z
   .object({
-    command: z.string().default("link-cli"),
     clientName: z.string().default("OpenClaw"),
     testMode: z.boolean().default(false),
     maxAmountCents: z
@@ -102,7 +101,6 @@ export function defaultPaymentConfig(): PaymentConfig {
     store: "~/.openclaw/payments",
     providers: {
       "stripe-link": {
-        command: "link-cli",
         clientName: "OpenClaw",
         testMode: false,
         maxAmountCents: 50000,
